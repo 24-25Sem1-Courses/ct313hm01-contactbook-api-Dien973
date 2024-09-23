@@ -1,7 +1,9 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports, no-undef
+/* eslint-disable no-undef */
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const express = require('express');
-// eslint-disable-next-line @typescript-eslint/no-require-imports, no-undef
 const contactsController = require('../controllers/contacts.controller');
+const { methodNotAllowed } = require('../controllers/erros.controller');
 
 const router = express.Router();
 
@@ -12,8 +14,10 @@ module.exports.setup = (app) => {
     router.get('/', contactsController.getContactsByFilter);
     router.post('/', contactsController.createContact);
     router.delete('/', contactsController.deleteAllContacts);
-    
+    router.all('/', methodNotAllowed);
+
     router.get('/:id', contactsController.getContact);
     router.put('/:id', contactsController.updateContact);
     router.delete('/:id', contactsController.deleteContact);
+    router.all('/:id', methodNotAllowed);
 };
