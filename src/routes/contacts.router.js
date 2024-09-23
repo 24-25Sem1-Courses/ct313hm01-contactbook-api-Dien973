@@ -4,7 +4,7 @@
 const express = require('express');
 const contactsController = require('../controllers/contacts.controller');
 const { methodNotAllowed } = require('../controllers/erros.controller');
-
+const avatarUpload = require('../middlewares/avatar-upload.middleware');
 const router = express.Router();
 
 // eslint-disable-next-line no-undef
@@ -81,7 +81,7 @@ module.exports.setup = (app) => {
      *                                  contacts:
      *                                      $ref: '#/components/chemas/contact'
      */
-    router.post('/', contactsController.createContact);
+    router.post('/', avatarUpload, contactsController.createContact);
 
     /**
      * @swagger
