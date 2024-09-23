@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-undef */
+
+const JSend = require('../jsend');
+
 function createContact(req, res) {
     return res.status(201).json({ contact: {} });
 }
