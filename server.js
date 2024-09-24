@@ -1,8 +1,5 @@
-/* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-require-imports */
 require('dotenv').config();
 const app = require('./src/app');
-
 //start the server
 const port = process.env.PORT || 3000;
 app.listen(port, () => {

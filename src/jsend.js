@@ -1,11 +1,11 @@
 /**
     * @param {object | null} data
     * @returns {{status: 'success', data: object | null}}
-*/
+    */
 function success(data = null) {
     return {
-    status: 'success',
-    data: data,
+        status: 'success',
+        data: data,
     };
 }
 
@@ -30,27 +30,26 @@ function fail(message, data = null) {
 }
 
 /**
-* @param {string} message
-* @param {object | null} [data]
-* @returns {{status: 'error', message: string, data: object | undefined}}
-*/
-function error(message, data = null) {
-    if (data) {
+    * @param {string} message
+    * @param {object | null} [data]
+    * @returns {{status: 'error', message: string, data: object | undefined}}
+    */
+    function error(message, data = null) {
+        if (data) {
+            return {
+                status: 'error',
+                message,
+                data,
+            };
+        }
         return {
             status: 'error',
             message,
-            data,
         };
     }
-    return {
-        status: 'error',
-        message,
-    };
-}
 
-// eslint-disable-next-line no-undef
-module.exports = {
-    success,
-    fail,
-    error,
-};
+    module.exports = {
+        success,
+        fail,
+        error,
+    };

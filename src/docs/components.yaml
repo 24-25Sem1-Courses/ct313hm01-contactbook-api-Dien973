@@ -9,7 +9,7 @@ components:
           readOnly: true # Returned by HTTP GET
         name:
           type: string
-          description: cintact name
+          description: contact name
         email:
           type: string
           format: email

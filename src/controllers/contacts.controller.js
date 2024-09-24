@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable no-undef */
-
 const contactsService = require('../services/contacts.service');
 const ApiError = require('../api-error');
 const JSend = require('../jsend');
@@ -16,11 +12,13 @@ async function createContact(req, res, next){
             ...req.body,
             avatar: req.file ? `/public/uploads/${req.file.filename}` : null,
         });
+
         return res
             .status(201)
             .set({
                 Location: `${req.baseUrl}/${contact.id}`,
             })
+
             .json(
                 JSend.success({
                     contact,
@@ -34,40 +32,101 @@ async function createContact(req, res, next){
     }
 }
 
-function getContactsByFilter(req, res) {
-    const filters = [];
-    const { favorite, name } = req.query;
-
-    if (favorite !== undefined) {
-        filters.push(`favorite=${favorite}`);
-    }
-    if (name) {
-        filters.push(`name=${name}`);
-    }
-
-    console.log(filters.join('&'));
+async function getContactsByFilter(req, res, next) {
+    let result = {
+        contacts: [],
+        metadata: {
+            totalRecords: 0,
+            firstPage: 1,
+            lastPage: 1,
+            page: 1,
+            limit: 5,
+        },
+    };
     
-    return res.json({ contacts: [] });
+    try {
+        result = await contactsService.getManyContacts(req.query);
+    } catch (error) {
+        console.log(error);
+        return next(
+            new ApiError(500, 'An error occurred while retrieving contacts')
+        );
+    }
+    return res.json(
+        JSend.success({
+            contacts: result.contacts,
+            metadata: result.metadata,
+        })
+    );
 }
 
-function getContact(req, res) {
-    return res.json({ contact: {} });
+async function getContact(req, res, next) {
+    const { id } = req.params;
+
+    try {
+        const contact = await contactsService.getContactById(id);
+        if (!contact) {
+            return next(new ApiError(404, 'Contact not found'));
+        }
+        return res.json(JSend.success({contact}));        
+    } catch (error) {
+        console.log(error); 
+        return next(new ApiError(500, `Error retrieving contact with id=${id}`));
+    }
 }
 
-function updateContact(req, res) {
-    return res.json({ contact: {} });
+async function updateContact(req, res, next) {
+    if (Object.keys(req.body).length == 0 && !req.file) {
+        return next(new ApiError(400, 'Data to update can not be empty'));
+    }
+
+    const { id } = req.params;
+
+    try {
+        const updated =await contactsService.updateContact(id, {
+            ...req.body,
+            avatar: req.file ? `/public/uploads/${req.file.filename}` : null,            
+        });
+        if (!updated) {
+            return next(new ApiError(404, 'Contact not found'));
+        }
+        return res.json(
+            JSend.success({
+                contact: updated,
+            })
+        );   
+    } catch (error) {
+        console.log(error);
+        return next(new ApiError(500, `Error updating contact with id=${id}`));
+    }
 }
 
-function deleteContact(req, res) {
-    return res.json({
-    message: 'Contact deleted',
-    });
+async function deleteContact(req, res, next) {
+    const { id } = req.params;
+
+    try {
+        const deleted = await contactsService.deleteContact(id);
+        if (!deleted) {
+            return next(new ApiError(404, 'Contact not found'));
+        }
+        return res.json(JSend.success());
+    } catch (error) {
+        console.log(error);
+        return next(new ApiError(500, `Could not delete contact with id=${id}`));
+    }
 }
 
-function deleteAllContacts(req, res) {
-    return res.json({
-    message: 'All contacts deleted',
-});
+async function deleteAllContacts(req, res, next) {
+    try {
+        await contactsService.deleteAllContacts();
+
+        return res.json(JSend.success());
+    } catch (error) {
+        console.log(error);
+        return next(
+            new ApiError(500, 'An error occurred while removing all contacts')
+        );
+    }
 }
 
 module.exports = {

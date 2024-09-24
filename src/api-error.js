@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 class ApiError extends Error {
     constructor(statusCode, message, headers = {}) {
         super();
