@@ -22,7 +22,6 @@ function fail(message, data = null) {
             data,
         };
     }
-
     return {
         status: 'fail',
         message,
@@ -35,21 +34,22 @@ function fail(message, data = null) {
     * @returns {{status: 'error', message: string, data: object | undefined}}
     */
     function error(message, data = null) {
-        if (data) {
-            return {
-                status: 'error',
-                message,
-                data,
-            };
-        }
+    if (data) {
         return {
             status: 'error',
             message,
+            data,
         };
-    }
-
-    module.exports = {
-        success,
-        fail,
-        error,
+    } 
+    
+    return {
+        status: 'error',
+        message,
     };
+}
+
+module.exports = {
+    success,
+    fail,
+    error,
+};
