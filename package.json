@@ -4,29 +4,9 @@
   "description": "API backend for the contactbook application.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@eslint/js": "^9.11.1",
-    "@faker-js/faker": "^9.0.1",
-    "eslint": "^9.11.1",
-    "eslint-config-prettier": "^9.1.0",
-    "globals": "^15.9.0",
-    "nodemon": "^3.1.7",
-    "prettier": "^3.3.3",
-    "typescript-eslint": "^8.6.0"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.21.0",
-    "knex": "^3.1.0",
-    "multer": "^1.4.5-lts.1",
-    "mysql": "^2.18.1",
-    "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
-  }
+  "license": "ISC"
 }
