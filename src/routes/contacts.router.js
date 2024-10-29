@@ -1,6 +1,8 @@
 const express = require('express');
 const contactsController = require('../controllers/contacts.controller');
 const { methodNotAllowed } = require('../controllers/errors.controller');
+const avatarUpload = require('../middlewares/avatar-upload.middleware');
+
 const router = express.Router();
 
 module.exports.setup = (app) => {
@@ -23,6 +25,8 @@ module.exports.setup = (app) => {
      *          schema:
      *            type: string
      *          description: Filter by contact name
+     *        - $ref: '#/components/parameters/limitParam'
+     *        - $ref: '#/components/parameters/pageParam'
      *      tags:
      *        - contacts
      *      responses:
@@ -40,10 +44,16 @@ module.exports.setup = (app) => {
      *                  data:
      *                    type: object
      *                    properties:
-     *                      contact:
+     *                      contacts:
      *                        type: array
      *                        items:
      *                          $ref: '#/components/schemas/Contact'
+     *                      metadata:
+     *                          $ref: '#/components/schemas/PaginationMetadata'
+     *        400:
+     *          $ref: '#/components/responses/400BadRequest'
+     *        500:
+     *          $ref: '#/components/responses/500InternalServerError'
     */
     router.get('/', contactsController.getContactsByFilter);
 
@@ -54,12 +64,11 @@ module.exports.setup = (app) => {
      *      summary: Create a new contact
      *      description: Create a new contact
      *      requestBody:
-     *          required: true
+     *          require: true
      *          content:
-     *              multipart/form-data:
-     *                  schema:
-     *                      $ref: '#/components/schemas/Contact'
-     * 
+     *            multipart/form-data:
+     *              schema:
+     *                $ref: '#/components/schemas/Contact'
      *      tags:
      *        - contacts
      *      responses:
@@ -77,10 +86,14 @@ module.exports.setup = (app) => {
      *                  data:
      *                    type: object
      *                    properties:
-     *                      contact:
-     *                          $ref: '#/components/schemas/Contact'
+     *                      contacts:
+     *                        $ref: '#/components/schemas/Contact' 
+     *        400:
+     *          $ref: '#/components/responses/400BadRequest'
+     *        500:
+     *          $ref: '#/components/responses/500InternalServerError' 
     */
-    router.post('/', contactsController.createContact);
+    router.post('/', avatarUpload, contactsController.createContact);
 
     /**
      * @swagger
@@ -94,6 +107,10 @@ module.exports.setup = (app) => {
      *        200:
      *          description: All contacts deleted
      *          $ref: '#/components/responses/200NoData'
+     *        400:
+     *          $ref: '#/components/responses/400BadRequest'
+     *        500:
+     *          $ref: '#/components/responses/500InternalServerError'
      */
     router.delete('/', contactsController.deleteAllContacts);
     router.all('/', methodNotAllowed);
@@ -124,7 +141,11 @@ module.exports.setup = (app) => {
      *                    type: object
      *                    properties: 
      *                      contact:
-     *                        $ref: '#/components/schemas/Contact'   
+     *                        $ref: '#/components/schemas/Contact'
+     *        400:
+     *          $ref: '#/components/responses/400BadRequest'
+     *        500:
+     *          $ref: '#/components/responses/500InternalServerError'   
      */
     router.get('/:id', contactsController.getContact);
 
@@ -160,9 +181,13 @@ module.exports.setup = (app) => {
      *                    type: object
      *                    properties: 
      *                      contact:
-     *                        $ref: '#/components/schemas/Contact'   
+     *                        $ref: '#/components/schemas/Contact' 
+     *        400:
+     *          $ref: '#/components/responses/400BadRequest'
+     *        500:
+     *          $ref: '#/components/responses/500InternalServerError'  
      */
-    router.put('/:id', contactsController.updateContact);
+    router.put('/:id', avatarUpload, contactsController.updateContact);
 
     /**
      * @swagger
@@ -178,6 +203,10 @@ module.exports.setup = (app) => {
      *        200:
      *          description: Contact deleted
      *          $ref: '#/components/responses/200NoData'
+     *        400:
+     *          $ref: '#/components/responses/400BadRequest'
+     *        500:
+     *          $ref: '#/components/responses/500InternalServerError'
      */
     router.delete('/:id', contactsController.deleteContact);
     router.all('/:id', methodNotAllowed);
